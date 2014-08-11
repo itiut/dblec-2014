@@ -10,14 +10,18 @@
 
 static const char *NAME_FORMAT = "%s#%09d";
 static const char *LAST_NAME_FORMAT = "%s";
-static const char *FIRST_NAME_FORMAT = "#$09d";
+static const char *FIRST_NAME_FORMAT = "#%09d";
 static const char *BRANCH_EMAIL_FORMAT = "%s#%09d@corporation.com";
+static const char *CUSTOMER_EMAIL_FORMAT = "%s#%09d@customer.com";
 static const char *ZIPCODE_FORMAT = "%03d-%04d";
 
 static const int ZIPCODE_UPPER_BOUND = 10000000;
 static const int ZIPCODE_HALF_MOD = 10000;
 
-static const char *BRANCH_OUTPUT_FORMAT = "%d\t%s\t%s\t%s\n";
+static const char *BRANCH_OUTPUT_FORMAT   = "%d\t%s\t%s\t%s\n";
+static const char *CUSTOMER_OUTPUT_FORMAT = "%d\t%s\t%s\t%s\t%s\n";
+static const char *PART_OUTPUT_FORMAT     = "%d\t%s\t%d\t%d\t%d\n";
+static const char *ORDER_OUTPUT_FORMAT    = "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n";
 
 typedef struct {
     int id;
@@ -53,6 +57,7 @@ typedef struct {
     int delivery_date;
 } order_t;
 
+int random_int(int min, int max);
 void generate_zipcode(char *s);
 
 /* NOTICE: the number of rows is limitted to INT_MAX */
