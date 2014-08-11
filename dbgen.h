@@ -11,8 +11,7 @@
 static const char *NAME_FORMAT = "%s#%09d";
 static const char *LAST_NAME_FORMAT = "%s";
 static const char *FIRST_NAME_FORMAT = "#%09d";
-static const char *BRANCH_EMAIL_FORMAT = "%s#%09d@corporation.com";
-static const char *CUSTOMER_EMAIL_FORMAT = "%s#%09d@customer.com";
+static const char *EMAIL_FORMAT = "%s#%09d@example.com";
 static const char *ZIPCODE_FORMAT = "%03d-%04d";
 
 static const int ZIPCODE_UPPER_BOUND = 10000000;

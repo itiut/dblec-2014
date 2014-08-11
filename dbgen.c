@@ -29,7 +29,7 @@ void generate_branches(FILE *fp, int size) {
         memset(&branch, 0, sizeof(branch));
         branch.id = i + 1;
         snprintf(branch.name, sizeof(branch.name), NAME_FORMAT, "Branch", branch.id);
-        snprintf(branch.email, sizeof(branch.email), BRANCH_EMAIL_FORMAT, "Branch", branch.id);
+        snprintf(branch.email, sizeof(branch.email), EMAIL_FORMAT, "Branch", branch.id);
         generate_zipcode(branch.zipcode);
         fprintf(fp, BRANCH_OUTPUT_FORMAT, branch.id, branch.name, branch.email, branch.zipcode);
     }
@@ -42,7 +42,7 @@ void generate_customers(FILE *fp, int size) {
         customer.id = i + 1;
         snprintf(customer.last_name, sizeof(customer.last_name), LAST_NAME_FORMAT, "Customer");
         snprintf(customer.first_name, sizeof(customer.first_name), FIRST_NAME_FORMAT, customer.id);
-        snprintf(customer.email, sizeof(customer.email), CUSTOMER_EMAIL_FORMAT, "Customer", customer.id);
+        snprintf(customer.email, sizeof(customer.email), EMAIL_FORMAT, "Customer", customer.id);
         generate_zipcode(customer.zipcode);
         fprintf(fp, CUSTOMER_OUTPUT_FORMAT, customer.id, customer.last_name, customer.first_name, customer.email, customer.zipcode);
     }
