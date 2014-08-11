@@ -3,19 +3,34 @@
 
 #include <stdio.h>
 
+static const int BASE_BRANCH_ROWS   =   100; /*   10000 */
+static const int BASE_CUSTOMER_ROWS =  1500; /*  150000 */
+static const int BASE_PART_ROWS     =  2000; /*  200000 */
+static const int BASE_ORDER_ROWS    = 60000; /* 6000000 */
+
 #define NAME_LENGTH 30
 #define HALF_NAME_LENGTH 15
 #define EMAIL_LENGTH 45
 #define ZIPCODE_LENGTH 8
+
+static const int PART_PRICE_MIN = 100;
+static const int PART_PRICE_MAX = 4000; /* TODO: change value for Q1 */
+static const int PART_STOCK_MIN = 100;
+static const int PART_STOCK_MAX = 1000;
+static const int PART_PRODUCTION_MIN = 100;
+static const int PART_PRODUCTION_MAX = 1000;
+
+static const int ORDER_QUANTITY_MIN = 1;
+static const int ORDER_QUANTITY_MAX = 50;
+
+static const int ZIPCODE_UPPER_BOUND = 10000000;
+static const int ZIPCODE_HALF_MOD = 10000;
 
 static const char *NAME_FORMAT = "%s#%09d";
 static const char *LAST_NAME_FORMAT = "%s";
 static const char *FIRST_NAME_FORMAT = "#%09d";
 static const char *EMAIL_FORMAT = "%s#%09d@example.com";
 static const char *ZIPCODE_FORMAT = "%03d-%04d";
-
-static const int ZIPCODE_UPPER_BOUND = 10000000;
-static const int ZIPCODE_HALF_MOD = 10000;
 
 static const char *BRANCH_OUTPUT_FORMAT   = "%d\t%s\t%s\t%s\n";
 static const char *CUSTOMER_OUTPUT_FORMAT = "%d\t%s\t%s\t%s\t%s\n";
@@ -60,9 +75,9 @@ int random_int(int min, int max);
 void generate_zipcode(char *s);
 
 /* NOTICE: the number of rows is limitted to INT_MAX */
-void generate_branches(FILE *fp, int size);
-void generate_customers(FILE *fp, int size);
-void generate_parts(FILE *fp, int size);
-void generate_orders(FILE *fp, int size);
+void generate_branches(FILE *fp, int sf);
+void generate_customers(FILE *fp, int sf);
+void generate_parts(FILE *fp, int sf);
+void generate_orders(FILE *fp, int sf);
 
 #endif /* DBGEN_H */

@@ -5,15 +5,26 @@
 #include "dbgen.h"
 
 int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <scale_factor>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    int sf = atoi(argv[1]);
+    if (sf <= 0) {
+        printf("scale factor must be greater then zero\n");
+        exit(EXIT_FAILURE);
+    }
+
     srand(time(NULL));
-    generate_branches(stdout, 10);
-    generate_customers(stdout, 10);
-    generate_parts(stdout, 10);
-    generate_orders(stdout, 10);
+    generate_branches(stdout, sf);
+    generate_customers(stdout, sf);
+    generate_parts(stdout, sf);
+    generate_orders(stdout, sf);
     return 0;
 }
 
-/* TODO: use random in C++11 */
+/* TODO: use Mersenne Twister */
 int random_int(int min, int max) {
     return min + (int)((max - min + 1.0) * rand() / (1.0 + RAND_MAX));
 }
@@ -23,8 +34,8 @@ void generate_zipcode(char *s) {
     snprintf(s, ZIPCODE_LENGTH + 1, ZIPCODE_FORMAT, zipcode / ZIPCODE_HALF_MOD, zipcode % ZIPCODE_HALF_MOD);
 }
 
-void generate_branches(FILE *fp, int size) {
-    for (int i = 0; i < size; i++) {
+void generate_branches(FILE *fp, int sf) {
+    for (int i = 0; i < sf * BASE_BRANCH_ROWS; i++) {
         branch_t branch;
         memset(&branch, 0, sizeof(branch));
         branch.id = i + 1;
@@ -35,8 +46,8 @@ void generate_branches(FILE *fp, int size) {
     }
 }
 
-void generate_customers(FILE *fp, int size) {
-    for (int i = 0; i < size; i++) {
+void generate_customers(FILE *fp, int sf) {
+    for (int i = 0; i < sf * BASE_CUSTOMER_ROWS; i++) {
         customer_t customer;
         memset(&customer, 0, sizeof(customer));
         customer.id = i + 1;
@@ -48,29 +59,28 @@ void generate_customers(FILE *fp, int size) {
     }
 }
 
-void generate_parts(FILE *fp, int size) {
-    for (int i = 0; i < size; i++) {
+void generate_parts(FILE *fp, int sf) {
+    for (int i = 0; i < sf * BASE_PART_ROWS; i++) {
         part_t part;
         memset(&part, 0, sizeof(part));
         part.id = i + 1;
         snprintf(part.name, sizeof(part.name), NAME_FORMAT, "Part", part.id);
-        part.price = random_int(100, 4000);
-        part.stock = random_int(100, 1000);
-        part.production_per_week = random_int(100, 1000);
+        part.price = random_int(PART_PRICE_MIN, PART_PRICE_MAX);
+        part.stock = random_int(PART_STOCK_MIN, PART_STOCK_MAX);
+        part.production_per_week = random_int(PART_PRODUCTION_MIN, PART_PRODUCTION_MAX);
         fprintf(fp, PART_OUTPUT_FORMAT, part.id, part.name, part.price, part.stock, part.production_per_week);
     }
 }
 
-void generate_orders(FILE *fp, int size) {
-    for (int i = 0; i < size; i++) {
+void generate_orders(FILE *fp, int sf) {
+    for (int i = 0; i < sf * BASE_ORDER_ROWS; i++) {
         order_t order;
         memset(&order, 0, sizeof(order));
         order.id = i + 1;
-        /* TODO: generate random int */
-        order.bid = 0;
-        order.cid = 0;
-        order.pid = 0;
-        order.quantity = random_int(1, 50);
+        order.bid = random_int(1, sf * BASE_BRANCH_ROWS);
+        order.cid = random_int(1, sf * BASE_CUSTOMER_ROWS);
+        order.pid = random_int(1, sf * BASE_PART_ROWS);
+        order.quantity = random_int(ORDER_QUANTITY_MIN, ORDER_QUANTITY_MAX);
         /* TODO: change random int to date(time) */
         order.order_datetime = 0;
         order.due_date = 0;
