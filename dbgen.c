@@ -17,10 +17,18 @@ int main(int argc, char *argv[]) {
     }
 
     srand(time(NULL));
-    generate_branches(stdout, sf);
-    generate_customers(stdout, sf);
-    generate_parts(stdout, sf);
-    generate_orders(stdout, sf);
+
+    char *tsvs[] = {
+        "branches.tsv", "customers.tsv", "parts.tsv", "orders.tsv"
+    };
+    void (*gfs[])(FILE *, int) = {
+        generate_branches, generate_customers, generate_parts, generate_orders
+    };
+    for (int i = 0; i < sizeof(tsvs) / sizeof(tsvs[0]); i++) {
+        FILE *fp = fopen(tsvs[i], "w");
+        gfs[i](fp, sf);
+        fclose(fp);
+    }
     return 0;
 }
 
