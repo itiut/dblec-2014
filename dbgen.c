@@ -34,12 +34,40 @@ int main(int argc, char *argv[]) {
 
 /* TODO: use Mersenne Twister */
 int random_int(int min, int max) {
-    return min + (int)((max - min + 1.0) * rand() / (1.0 + RAND_MAX));
+    return min + (int)((max - min + 1.0) * (double) rand() / (1.0 + RAND_MAX));
+}
+
+time_t xmktime(int year, int month, int day) {
+    struct tm timeinfo = {
+        .tm_year = year - 1900,
+        .tm_mon = month - 1,
+        .tm_mday = day
+    };
+    time_t t = mktime(&timeinfo);
+    if (t == -1) {
+        perror("mktime(3)");
+        exit(EXIT_FAILURE);
+    }
+    return t;
 }
 
 void generate_zipcode(char *s) {
     int zipcode = random_int(0, ZIPCODE_UPPER_BOUND);
     snprintf(s, ZIPCODE_LENGTH + 1, ZIPCODE_FORMAT, zipcode / ZIPCODE_HALF_MOD, zipcode % ZIPCODE_HALF_MOD);
+}
+
+void generate_dates(order_t *order) {
+    time_t begin_time= xmktime(ORDER_DATE_YEAR, 1, 1);
+    time_t end_time = xmktime(ORDER_DATE_YEAR + 1, 1, 1);
+
+    time_t order_time = random_int(begin_time, end_time - 1 - MAX_DELIVERY_DATE_LENGTH * 86400);
+    int due_date_length = random_int(1, MAX_DUE_DATE_LENGTH);
+    time_t due_time = order_time + due_date_length * 86400;
+    time_t delivery_time = order_time + due_date_length * ((double) rand() / RAND_MAX + 0.5) * 86400;
+
+    strftime(order->order_datetime, sizeof(order->order_datetime), DATETIME_FORMAT, localtime(&order_time));
+    strftime(order->due_date, sizeof(order->due_date), DATE_FORMAT, localtime(&due_time));
+    strftime(order->delivery_date, sizeof(order->delivery_date), DATE_FORMAT, localtime(&delivery_time));
 }
 
 void generate_branches(FILE *fp, int sf) {
@@ -89,10 +117,7 @@ void generate_orders(FILE *fp, int sf) {
         order.cid = random_int(1, sf * BASE_CUSTOMER_ROWS);
         order.pid = random_int(1, sf * BASE_PART_ROWS);
         order.quantity = random_int(ORDER_QUANTITY_MIN, ORDER_QUANTITY_MAX);
-        /* TODO: change random int to date(time) */
-        order.order_datetime = 0;
-        order.due_date = 0;
-        order.delivery_date = 0;
+        generate_dates(&order);
         fprintf(fp, ORDER_OUTPUT_FORMAT, order.id, order.bid, order.cid, order.pid, order.quantity, order.order_datetime, order.due_date, order.delivery_date);
     }
 }

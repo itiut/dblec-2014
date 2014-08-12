@@ -2,6 +2,7 @@
 #define DBGEN_H
 
 #include <stdio.h>
+#include <time.h>
 
 static const int BASE_BRANCH_ROWS   =   100; /*   10000 */
 static const int BASE_CUSTOMER_ROWS =  1500; /*  150000 */
@@ -12,6 +13,8 @@ static const int BASE_ORDER_ROWS    = 60000; /* 6000000 */
 #define HALF_NAME_LENGTH 15
 #define EMAIL_LENGTH 45
 #define ZIPCODE_LENGTH 8
+#define DATETIME_LENGTH 19
+#define DATE_LENGTH 10
 
 static const int PART_PRICE_MIN = 100;
 static const int PART_PRICE_MAX = 4000; /* TODO: change value for Q1 */
@@ -22,6 +25,9 @@ static const int PART_PRODUCTION_MAX = 1000;
 
 static const int ORDER_QUANTITY_MIN = 1;
 static const int ORDER_QUANTITY_MAX = 50;
+static const int ORDER_DATE_YEAR = 2013;
+static const int MAX_DUE_DATE_LENGTH = 10;
+static const int MAX_DELIVERY_DATE_LENGTH = 15;
 
 static const int ZIPCODE_UPPER_BOUND = 10000000;
 static const int ZIPCODE_HALF_MOD = 10000;
@@ -31,11 +37,13 @@ static const char *LAST_NAME_FORMAT = "%s";
 static const char *FIRST_NAME_FORMAT = "#%09d";
 static const char *EMAIL_FORMAT = "%s#%09d@example.com";
 static const char *ZIPCODE_FORMAT = "%03d-%04d";
+static const char *DATETIME_FORMAT = "%F %T";
+static const char *DATE_FORMAT = "%F";
 
 static const char *BRANCH_OUTPUT_FORMAT   = "%d\t%s\t%s\t%s\n";
 static const char *CUSTOMER_OUTPUT_FORMAT = "%d\t%s\t%s\t%s\t%s\n";
 static const char *PART_OUTPUT_FORMAT     = "%d\t%s\t%d\t%d\t%d\n";
-static const char *ORDER_OUTPUT_FORMAT    = "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n";
+static const char *ORDER_OUTPUT_FORMAT    = "%d\t%d\t%d\t%d\t%d\t%s\t%s\t%s\n";
 
 typedef struct {
     int id;
@@ -66,15 +74,19 @@ typedef struct {
     int cid;
     int pid;
     int quantity;
-    int order_datetime;
-    int due_date;
-    int delivery_date;
+    char order_datetime[DATETIME_LENGTH + 1];
+    char due_date[DATE_LENGTH + 1];
+    char delivery_date[DATE_LENGTH + 1];
 } order_t;
 
 int random_int(int min, int max);
+time_t xmktime(int year, int month, int day);
+
 void generate_zipcode(char *s);
+void generate_dates(order_t *order);
 
 /* NOTICE: the number of rows is limitted to INT_MAX */
+/*         sf * BASE_ORDER_ROWS must be smaller than or equal to INT_MAX */
 void generate_branches(FILE *fp, int sf);
 void generate_customers(FILE *fp, int sf);
 void generate_parts(FILE *fp, int sf);
