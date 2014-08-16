@@ -17,7 +17,7 @@ static const int BASE_ORDER_ROWS    = 30000; /* 6000000 */
 #define DATE_LENGTH 10
 
 static const int PART_PRICE_MIN = 100;
-static const int PART_PRICE_MAX = 4000; /* TODO: change value for Q1 */
+static const int PART_PRICE_MAX = 3050;
 static const int PART_STOCK_MIN = 100;
 static const int PART_STOCK_MAX = 1000;
 static const int PART_PRODUCTION_MIN = 100;
