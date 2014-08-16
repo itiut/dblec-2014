@@ -26,6 +26,7 @@ static const int PART_PRODUCTION_MAX = 1000;
 static const int ORDER_QUANTITY_MIN = 1;
 static const int ORDER_QUANTITY_MAX = 50;
 static const int ORDER_DATE_YEAR = 2013;
+static const double ORDER_IN_SAME_PREFECTURE_RATE = 0.9;
 static const int MAX_DUE_DATE_LENGTH = 10;
 static const int MAX_DELIVERY_DATE_LENGTH = 15;
 
@@ -83,7 +84,7 @@ int random_int(int min, int max);
 double random_double(double min, double max);
 time_t xmktime(int year, int month, int day);
 
-void generate_zipcode(char *s);
+void generate_zipcode(const int id, char *s);
 void generate_dates(order_t *order);
 
 /* NOTICE: the number of rows is limitted to INT_MAX */

@@ -55,8 +55,14 @@ time_t xmktime(int year, int month, int day) {
     return t;
 }
 
-void generate_zipcode(char *s) {
-    int zipcode = random_int(0, ZIPCODE_UPPER_BOUND);
+/**
+ * Generate zipcode and set it to char *s
+ * For selectivity of query 2, set first two digits of zipcode to last two digits of id.
+ */
+void generate_zipcode(const int id, char *s) {
+    int zipcode =
+        (id % 100) * ZIPCODE_UPPER_BOUND / 100
+        + random_int(0, ZIPCODE_UPPER_BOUND / 100);
     snprintf(s, ZIPCODE_LENGTH + 1, ZIPCODE_FORMAT, zipcode / ZIPCODE_HALF_MOD, zipcode % ZIPCODE_HALF_MOD);
 }
 
@@ -81,7 +87,7 @@ void generate_branches(FILE *fp, int sf) {
         branch.id = i + 1;
         snprintf(branch.name, sizeof(branch.name), NAME_FORMAT, "Branch", branch.id);
         snprintf(branch.email, sizeof(branch.email), EMAIL_FORMAT, "Branch", branch.id);
-        generate_zipcode(branch.zipcode);
+        generate_zipcode(branch.id, branch.zipcode);
         fprintf(fp, BRANCH_OUTPUT_FORMAT, branch.id, branch.name, branch.email, branch.zipcode);
     }
 }
@@ -94,7 +100,7 @@ void generate_customers(FILE *fp, int sf) {
         snprintf(customer.last_name, sizeof(customer.last_name), LAST_NAME_FORMAT, "Customer");
         snprintf(customer.first_name, sizeof(customer.first_name), FIRST_NAME_FORMAT, customer.id);
         snprintf(customer.email, sizeof(customer.email), EMAIL_FORMAT, "Customer", customer.id);
-        generate_zipcode(customer.zipcode);
+        generate_zipcode(customer.id, customer.zipcode);
         fprintf(fp, CUSTOMER_OUTPUT_FORMAT, customer.id, customer.last_name, customer.first_name, customer.email, customer.zipcode);
     }
 }
@@ -112,6 +118,10 @@ void generate_parts(FILE *fp, int sf) {
     }
 }
 
+/**
+ * Generate data of orders table and write them into FILE *fp
+ * For selectivity of query 2, set last two digits of bid and cid to the same value with a probability of ORDER_IN_SAME_PREFECTURE_RATE.
+ */
 void generate_orders(FILE *fp, int sf) {
     for (int i = 0; i < sf * BASE_ORDER_ROWS; i++) {
         order_t order;
@@ -119,6 +129,16 @@ void generate_orders(FILE *fp, int sf) {
         order.id = i + 1;
         order.bid = random_int(1, sf * BASE_BRANCH_ROWS);
         order.cid = random_int(1, sf * BASE_CUSTOMER_ROWS);
+        if (ORDER_IN_SAME_PREFECTURE_RATE > random_double(0, 1)) {
+            /* same prefecture */
+            int pref = random_int(0, 99);
+            order.bid--;
+            order.bid += -(order.bid % 100) + pref;
+            order.bid++;
+            order.cid--;
+            order.cid += -(order.cid % 100) + pref;
+            order.cid++;
+        }
         order.pid = random_int(1, sf * BASE_PART_ROWS);
         order.quantity = random_int(ORDER_QUANTITY_MIN, ORDER_QUANTITY_MAX);
         generate_dates(&order);
