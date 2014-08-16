@@ -7,7 +7,7 @@
 static const int BASE_BRANCH_ROWS   =   100; /*   10000 */
 static const int BASE_CUSTOMER_ROWS =  1500; /*  150000 */
 static const int BASE_PART_ROWS     =  2000; /*  200000 */
-static const int BASE_ORDER_ROWS    = 60000; /* 6000000 */
+static const int BASE_ORDER_ROWS    = 30000; /* 6000000 */
 
 #define NAME_LENGTH 30
 #define HALF_NAME_LENGTH 15
