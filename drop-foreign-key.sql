@@ -1,0 +1,6 @@
+ALTER TABLE orders DROP FOREIGN KEY o_bid;
+ALTER TABLE orders DROP FOREIGN KEY o_cid;
+ALTER TABLE orders DROP FOREIGN KEY o_pid;
+ALTER TABLE orders DROP INDEX o_bid_idx;
+ALTER TABLE orders DROP INDEX o_cid_idx;
+ALTER TABLE orders DROP INDEX o_pid_idx;
