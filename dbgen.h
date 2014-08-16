@@ -80,6 +80,7 @@ typedef struct {
 } order_t;
 
 int random_int(int min, int max);
+double random_double(double min, double max);
 time_t xmktime(int year, int month, int day);
 
 void generate_zipcode(char *s);

@@ -37,6 +37,10 @@ int random_int(int min, int max) {
     return min + (int)((max - min + 1.0) * (double) rand() / (1.0 + RAND_MAX));
 }
 
+double random_double(double min, double max) {
+    return min + ((double) rand() / RAND_MAX) * (max - min);
+}
+
 time_t xmktime(int year, int month, int day) {
     struct tm timeinfo = {
         .tm_year = year - 1900,
@@ -63,7 +67,7 @@ void generate_dates(order_t *order) {
     time_t order_time = random_int(begin_time, end_time - 1 - MAX_DELIVERY_DATE_LENGTH * 86400);
     int due_date_length = random_int(1, MAX_DUE_DATE_LENGTH);
     time_t due_time = order_time + due_date_length * 86400;
-    time_t delivery_time = order_time + due_date_length * ((double) rand() / RAND_MAX + 0.5) * 86400;
+    time_t delivery_time = order_time + due_date_length * random_double(0.5, 1.5) * 86400;
 
     strftime(order->order_datetime, sizeof(order->order_datetime), DATETIME_FORMAT, localtime(&order_time));
     strftime(order->due_date, sizeof(order->due_date), DATE_FORMAT, localtime(&due_time));
