@@ -1,3 +1,7 @@
 *.o
 *.tsv
 dbgen
+
+*.aux
+*.dvi
+*.log
